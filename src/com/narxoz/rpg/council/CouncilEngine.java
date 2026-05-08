@@ -1,45 +1,58 @@
-public CouncilRunResult runCouncil(List<Hero> party, QuestLog questLog, GuildMediator hall) {
+package com.narxoz.rpg.council;
 
-    int questsTraversed = 0;
-    int messagesRouted = 0;
-    int membersNotified = 4;
+import com.narxoz.rpg.combatant.Hero;
+import com.narxoz.rpg.guild.GuildMediator;
+import com.narxoz.rpg.quest.QuestLog;
+import java.util.List;
 
-    System.out.println("\n=== ORDERED QUESTS ===");
+/**
+ * Orchestrates a planning session that uses both Iterator and Mediator.
+ */
+public class CouncilEngine {
 
-    var ordered = questLog.ordered();
+    public CouncilRunResult runCouncil(List<Hero> party, QuestLog questLog, GuildMediator hall) {
 
-    while (ordered.hasNext()) {
+        int questsTraversed = 0;
+        int messagesRouted = 0;
+        int membersNotified = 4;
 
-        var quest = ordered.next();
+        System.out.println("\n=== ORDERED QUESTS ===");
 
-        System.out.println(quest);
+        var ordered = questLog.ordered();
 
-        hall.dispatch(
-                "COMMAND",
-                null,
-                "Prepare party for: " + quest.getTitle()
+        while (ordered.hasNext()) {
+
+            var quest = ordered.next();
+
+            System.out.println(quest);
+
+            hall.dispatch(
+                    "COMMAND",
+                    null,
+                    "Prepare party for: " + quest.getTitle()
+            );
+
+            questsTraversed++;
+            messagesRouted++;
+        }
+
+        System.out.println("\n=== REVERSE QUESTS ===");
+
+        var reverse = questLog.reverse();
+
+        while (reverse.hasNext()) {
+
+            var quest = reverse.next();
+
+            System.out.println(quest);
+
+            questsTraversed++;
+        }
+
+        return new CouncilRunResult(
+                questsTraversed,
+                messagesRouted,
+                membersNotified
         );
-
-        questsTraversed++;
-        messagesRouted++;
     }
-
-    System.out.println("\n=== REVERSE QUESTS ===");
-
-    var reverse = questLog.reverse();
-
-    while (reverse.hasNext()) {
-
-        var quest = reverse.next();
-
-        System.out.println(quest);
-
-        questsTraversed++;
-    }
-
-    return new CouncilRunResult(
-            questsTraversed,
-            messagesRouted,
-            membersNotified
-    );
 }
