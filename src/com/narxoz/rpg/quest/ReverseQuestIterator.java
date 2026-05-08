@@ -17,13 +17,11 @@ public class ReverseQuestIterator implements QuestIterator {
 
     @Override
     public boolean hasNext() {
-        // TODO
-        return false;
+        return cursor >= 0;
     }
 
     @Override
     public Quest next() {
-        // TODO
-        return null;
+        return snapshot.get(cursor--);
     }
 }
