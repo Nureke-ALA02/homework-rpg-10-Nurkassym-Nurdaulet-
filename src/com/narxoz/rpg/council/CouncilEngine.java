@@ -1,19 +1,45 @@
-package com.narxoz.rpg.council;
+public CouncilRunResult runCouncil(List<Hero> party, QuestLog questLog, GuildMediator hall) {
 
-import com.narxoz.rpg.combatant.Hero;
-import com.narxoz.rpg.guild.GuildMediator;
-import com.narxoz.rpg.quest.QuestLog;
-import java.util.List;
+    int questsTraversed = 0;
+    int messagesRouted = 0;
+    int membersNotified = 4;
 
-/**
- * Orchestrates a planning session that uses both Iterator and Mediator.
- */
-public class CouncilEngine {
+    System.out.println("\n=== ORDERED QUESTS ===");
 
-    public CouncilRunResult runCouncil(List<Hero> party, QuestLog questLog, GuildMediator hall) {
-        // TODO: walk questLog with at least 2 different iterators,
-        //       dispatch coordinating messages through hall for each quest,
-        //       and return counters (questsTraversed, messagesRouted, membersNotified).
-        return new CouncilRunResult(0, 0, 0);
+    var ordered = questLog.ordered();
+
+    while (ordered.hasNext()) {
+
+        var quest = ordered.next();
+
+        System.out.println(quest);
+
+        hall.dispatch(
+                "COMMAND",
+                null,
+                "Prepare party for: " + quest.getTitle()
+        );
+
+        questsTraversed++;
+        messagesRouted++;
     }
+
+    System.out.println("\n=== REVERSE QUESTS ===");
+
+    var reverse = questLog.reverse();
+
+    while (reverse.hasNext()) {
+
+        var quest = reverse.next();
+
+        System.out.println(quest);
+
+        questsTraversed++;
+    }
+
+    return new CouncilRunResult(
+            questsTraversed,
+            messagesRouted,
+            membersNotified
+    );
 }
